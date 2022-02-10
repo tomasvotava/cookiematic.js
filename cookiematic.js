@@ -159,6 +159,8 @@ class CookieMatic {
               class="cookiematic--checkbox"
             ></span></span
         ></label>
+        <p style="text-align: center; border-top: 1px solid #979797; margin-top: 1em;">Pokud chcete získat více informací, přečtěte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobních údajů a používání souborů cookie</a>.
+        </p>
         <div class="cookiematic--controls">
           <button
             class="cookiematic--button cookiematic--accept-all"
@@ -415,10 +417,16 @@ class CookieMatic {
       this.showSettings();
       return false;
     };
-    document.querySelector(".cookiematic--drop-policy").onclick = () =>
-      this.hidePolicy();
+    const policyDrop = document.querySelector(".cookiematic--drop-policy");
+    policyDrop.onclick = (ev) => {
+      if (ev.target === policyDrop) this.hidePolicy();
+    };
     document.querySelector(".cookiematic--close").onclick = () =>
       this.hidePolicy();
+    document.querySelector(".cookiematic--open-policy").onclick = () => {
+      this.showPolicy();
+      return false;
+    };
   }
 
   #show(suffix) {
