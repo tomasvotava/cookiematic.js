@@ -8,6 +8,37 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.7);
   z-index: 19999;
+  display: none;
+}
+
+.cookiematic--drop.show {
+  display: block;
+}
+
+.cookiematic--policy {
+  box-sizing: border-box;
+  background: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid black;
+  z-index: 20000;
+  min-width: 480px;
+  max-width: 100vw;
+  width: 80vw;
+  color: black;
+  height: 80vh;
+  min-height: 640px;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 1em 1.5em;
+  text-shadow: 0 0 16px black;
+}
+
+.cookiematic--policy * {
+  color: black;
+  text-shadow: none;
 }
 
 .cookiematic--banner {
@@ -25,10 +56,113 @@
   box-shadow: 0px 0px 16px black;
 }
 
+.cookiematic--drop .cookiematic--relative {
+  /* position: relative; */
+  width: 100%;
+  height: 100%;
+}
+
+.cookiematic--drop .cookiematic--close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-weight: bold;
+  color: #979797;
+  font-size: 48px;
+  background-color: transparent;
+  z-index: 20001;
+  cursor: pointer;
+  transition: color 100ms ease-in;
+}
+
+.cookiematic--drop .cookiematic--close:hover,
+.cookiematic--drop .cookiematic--close:focus,
+.cookiematic--drop .cookiematic--close:active {
+  color: white;
+}
+
+.cookiematic--banner h1,
+.cookiematic--banner h2,
+.cookiematic--banner h3,
+.cookiematic--policy h1,
+.cookiematic--policy h2,
+.cookiematic--policy h3 {
+  color: black;
+  font-weight: bold;
+  text-shadow: none;
+  text-align: left;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.cookiematic--banner h1,
+.cookiematic--policy h1 {
+  font-size: 26px;
+  text-align: center;
+}
+
+.cookiematic--banner h2,
+.cookiematic--policy h2 {
+  font-size: 24px;
+  padding-bottom: 0;
+}
+
+.cookiematic--banner h3,
+.cookiematic--policy h3 {
+  font-size: 20px;
+}
+
+.cookiematic--policy h1,
+.cookiematic--policy h2,
+.cookiematic--policy h3 {
+  text-align: center;
+  margin-top: 1em;
+}
+
+.cookiematic--policy ol,
+.cookiematic--policy ul {
+  list-style-position: outside;
+  text-align: left;
+  padding: 0.5em 2em;
+}
+
+.cookiematic--policy p {
+  text-align: left;
+}
+
+.cookiematic--policy table td {
+  padding: 0.5em 1em;
+  margin: 0;
+}
+
+.cookiematic--policy table td:nth-child(3) {
+  text-align: left;
+}
+
+.cookiematic--policy table th {
+  border-right: 1px solid #979797;
+  padding: 0.5em 1em;
+  margin: 0;
+}
+
+.cookiematic--policy table tr {
+  border-bottom: 1px solid #979797;
+}
+.cookiematic--policy table thead td {
+  font-weight: bold;
+}
+
+.cookiematic--banner p {
+  color: black;
+  text-shadow: none;
+  text-align: left;
+  padding: 0.5em 0 !important;
+}
+
 .cookiematic--banner label {
   display: flex;
   flex-direction: row;
-  column-gap: 4px;
+  column-gap: 16px;
   align-items: center;
   justify-content: center;
 }
@@ -63,8 +197,9 @@
   transition: border-color 100ms linear;
 }
 
-.cookiematic--banner label {
-  border-bottom: 1px solid #979797;
+.cookiematic--banner h2 {
+  border-top: 1px solid #979797;
+  padding-top: 0.5em;
 }
 
 .cookiematic--banner label:hover input:not(:disabled) ~ .cookiematic--checkbox {
@@ -148,11 +283,12 @@
   border-bottom: none;
   text-decoration: none;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
   padding: 2px 4px;
   color: #676767;
   background: white;
   transition: border-color 100ms linear, color 100ms linear;
+  z-index: 19999;
 }
 
 .cookiematic--float:hover,
