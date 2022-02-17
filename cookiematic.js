@@ -16,6 +16,41 @@ function getCookie(cookiename) {
   );
 }
 
+const strings = {
+  cz: {
+    cookiesSettings: "Nastavení cookies",
+    functionalCookies: "Funkční cookies",
+    functionalCookiesDescription:
+      "Tyto cookies jsou povoleny automaticky, protože jsou nezbytné pro základní funkce stránky",
+    analyticalCookies: "Analytické cookies",
+    analyticalCookiesDescription:
+      "Díky tomuto druhu cookies můžeme měřit anonymizované návštěvy webu či analyzovat, jak jsou stránky používány, což nám umožňuje zlepšovat jejich funkčnost.",
+    marketingCookies: "Marketingové cookies",
+    marketingCookiesDescription:
+      "Marketingové cookies pomáhají nám a našim partnerům s lepším cílením reklam. Tyto cookies také pracují s anonymizovanými daty.",
+    additionalInfoLink: `Pokud chcete získat více informací, přečtěte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobních údajů a používání souborů cookie</a>.`,
+    acceptAll: "Přijmout vše",
+    saveSettings: "Uložit nastavení",
+    refuseOptional: "Odmítnout volitelná cookies",
+  },
+  sk: {
+    cookiesSettings: "Nastavenia cookies",
+    functionalCookies: "Funkčné cookies",
+    functionalCookiesDescription:
+      "Tieto cookies sú povolené automaticky pretože sú nevyhnutné pre základné funkcie stránky.",
+    analyticalCookies: "Analytické cookies",
+    analyticalCookiesDescription:
+      "Vďaka tomuto druhu cookies môžeme merať anonymizované návštevy webu či analyzovať, ako sú stránky používané, čo nám umožňuje zlepšovať ich funkčnosť.",
+    marketingCookies: "Marketingové cookies",
+    marketingCookiesDescription:
+      "Marketingové cookies pomáhajú nám a našim partnerom s lepším cielením reklám. Tieto cookies tiež pracujú s anonymizovanými dátami.",
+    additionalInfoLink: null, // Ak chcete získať viac informácií, prečítajte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobných údajov a používanie súborov cookie</a>.
+    acceptAll: "Prijať všetky",
+    saveSettings: "Uložiť nastavenia",
+    refuseOptional: "Odmietnuť voliteľné cookies",
+  },
+};
+
 /**
  * Set cookie value
  * @param {String} name Cookie name to set value of
@@ -40,6 +75,7 @@ function setCookie(name, value, expDays) {
  * @property {String} accentColor
  * @property {String} accentText
  * @property {Boolean} reload
+ * @property {String} language
  */
 
 class CookieMatic {
@@ -105,18 +141,26 @@ class CookieMatic {
   }
 
   /**
+   * Get localized string value
+   * @param {String} name Name of the string
+   * @returns {String} localized string value
+   */
+  getStr(name) {
+    return strings[this.options.language || "cz"][name];
+  }
+
+  /**
    * @returns {String}
    */
   get html() {
     return `<div class="cookiematic--drop cookiematic--drop-settings">
     <div class="cookiematic--banner">
-      <h1>Nastavení cookies</h1>
+      <h1>${this.getStr("cookiesSettings")}</h1>
       <div>
-        <h2>Funkční cookies</h2>
+        <h2>${this.getStr("functionalCookies")}</h2>
         <label for="cookiematic--select-necessary">
           <p>
-            Tyto cookies jsou povoleny automaticky, protože jsou nezbytné pro
-            základní funkce stránky
+            ${this.getStr("functionalCookiesDescription")}
           </p>
           <span class="cookiematic--select disabled">
             <input
@@ -128,12 +172,10 @@ class CookieMatic {
               class="cookiematic--checkbox"
             ></span></span
         ></label>
-        <h2>Analytické cookies</h2>
+        <h2>${this.getStr("analyticalCookies")}</h2>
         <label for="cookiematic--select-analytics">
           <p>
-            Díky tomuto druhu cookies můžeme měřit anonymizované návštěvy webu či
-            analyzovat, jak jsou stránky používány, což nám umožňuje zlepšovat
-            jejich funkčnost.
+            ${this.getStr("analyticalCookiesDescription")}
           </p>
           <span class="cookiematic--select">
             <input
@@ -144,11 +186,10 @@ class CookieMatic {
               class="cookiematic--checkbox"
             ></span></span
         ></label>
-        <h2>Marketingové cookies</h2>
+        <h2>${this.getStr("marketingCookies")}</h2>
         <label for="cookiematic--select-marketing">
           <p>
-            Marketingové cookies pomáhají nám a našim partnerům s lepším cílením
-            reklam. Tyto cookies také pracují s anonymizovanými daty.
+            ${this.getStr("marketingCookiesDescription")}
           </p>
           <span class="cookiematic--select">
             <input
@@ -159,7 +200,8 @@ class CookieMatic {
               class="cookiematic--checkbox"
             ></span></span
         ></label>
-        <p style="text-align: center; border-top: 1px solid #979797; margin-top: 1em;">Pokud chcete získat více informací, přečtěte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobních údajů a používání souborů cookie</a>.
+        <p style="text-align: center; border-top: 1px solid #979797; margin-top: 1em;">
+          ${this.getStr("additionalInfoLink") || ""}
         </p>
         <div class="cookiematic--controls">
           <button
@@ -169,19 +211,19 @@ class CookieMatic {
             }; color: ${this.options.accentText || "black"}"
             type="button"
           >
-            Přijmout vše
+            ${this.getStr("acceptAll")}
           </button>
           <button
             class="cookiematic--button cookiematic--accept-form"
             type="button"
           >
-            Uložit nastavení
+            ${this.getStr("saveSettings")}
           </button>
           <button
             class="cookiematic--button cookiematic--accept-none"
             type="button"
           >
-            Odmítnout volitelná cookies
+            ${this.getStr("refuseOptional")}
           </button>
         </div>
       </div>
@@ -423,10 +465,12 @@ class CookieMatic {
     };
     document.querySelector(".cookiematic--close").onclick = () =>
       this.hidePolicy();
-    document.querySelector(".cookiematic--open-policy").onclick = () => {
-      this.showPolicy();
-      return false;
-    };
+    const policyOpener = document.querySelector(".cookiematic--open-policy");
+    if (policyOpener)
+      policyOpener.onclick = () => {
+        this.showPolicy();
+        return false;
+      };
   }
 
   #show(suffix) {
