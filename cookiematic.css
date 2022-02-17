@@ -49,7 +49,7 @@
   border: 2px solid black;
   z-index: 20000;
   width: 100%;
-  max-width: clamp(340px, 470px, 90vw);
+  max-width: clamp(340px, 580px, 90vw);
   background: white;
   color: #141414;
   padding: 8px 16px;
@@ -88,6 +88,7 @@
 .cookiematic--policy h2,
 .cookiematic--policy h3 {
   color: black;
+  opacity: 1;
   font-weight: bold;
   text-shadow: none;
   text-align: left;
@@ -124,10 +125,12 @@
   list-style-position: outside;
   text-align: left;
   padding: 0.5em 2em;
+  font-size: 16px;
 }
 
 .cookiematic--policy p {
   text-align: left;
+  font-family: sans-serif;
 }
 
 .cookiematic--policy table td {
@@ -143,6 +146,10 @@
   border-right: 1px solid #979797;
   padding: 0.5em 1em;
   margin: 0;
+}
+
+.cookiematic--policy a {
+  font-size: 16px;
 }
 
 .cookiematic--policy table tr {
@@ -258,6 +265,7 @@
 }
 
 .cookiematic--button {
+  margin: 0;
   border: 1px solid #979797;
   background-color: white;
   padding: 0.7em 1em;

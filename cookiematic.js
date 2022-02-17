@@ -141,6 +141,13 @@ class CookieMatic {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get consentGiven() {
+    return !!getCookie("consent_given");
+  }
+
+  /**
    * Get localized string value
    * @param {String} name Name of the string
    * @returns {String} localized string value
