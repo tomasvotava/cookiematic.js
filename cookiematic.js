@@ -480,13 +480,13 @@ class CookieMatic {
       };
   }
 
-  #show(suffix) {
+  show(suffix) {
     document
       .querySelector(`.cookiematic--drop-${suffix}`)
       .classList.add("show");
   }
 
-  #hide(suffix) {
+  hide(suffix) {
     document
       .querySelector(`.cookiematic--drop-${suffix}`)
       .classList.remove("show");
@@ -494,18 +494,18 @@ class CookieMatic {
 
   showSettings() {
     if (this.container) this.create(this.container);
-    this.#show("settings");
+    this.show("settings");
   }
 
   hideSettings() {
-    this.#hide("settings");
+    this.hide("settings");
   }
 
   showPolicy() {
-    this.#show("policy");
+    this.show("policy");
   }
 
   hidePolicy() {
-    this.#hide("policy");
+    this.hide("policy");
   }
 }
