@@ -44,7 +44,7 @@ const strings = {
     marketingCookies: "Marketingové cookies",
     marketingCookiesDescription:
       "Marketingové cookies pomáhajú nám a našim partnerom s lepším cielením reklám. Tieto cookies tiež pracujú s anonymizovanými dátami.",
-    additionalInfoLink: null, // Ak chcete získať viac informácií, prečítajte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobných údajov a používanie súborov cookie</a>.
+    additionalInfoLink: `Ak chcete získať viac informácií, prečítajte si naše <a href="#" class="cookiematic--open-policy">Zásady ochrany osobných údajov a používanie súborov cookie</a>.`,
     acceptAll: "Prijať všetky",
     saveSettings: "Uložiť nastavenia",
     refuseOptional: "Odmietnuť voliteľné cookies",
@@ -76,6 +76,8 @@ function setCookie(name, value, expDays) {
  * @property {String} accentText
  * @property {Boolean} reload
  * @property {String} language
+ * @property {String} checkout
+ * @property {String} policyBaseUrl
  */
 
 class CookieMatic {
@@ -86,12 +88,23 @@ class CookieMatic {
   constructor(options) {
     this.options = options || {};
     this.container = null;
+    this.created = false;
   }
 
   getFormFieldConfig(formFieldType) {
     const el = document.getElementById(`cookiematic--select-${formFieldType}`);
     if (!el) return false;
     return !!el.checked;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get policyBaseUrl() {
+    if (this.options.policyBaseUrl) return this.options.policyBaseUrl;
+    return `https://cdn.jsdelivr.net/gh/tomasvotava/cookiematic.js@${
+      this.options.checkout || "master"
+    }`;
   }
 
   /**
@@ -242,6 +255,57 @@ class CookieMatic {
 
   /**
    * @returns {String}
+   */
+  get policyUrl() {
+    return `${this.policyBaseUrl}/policy.${this.options.language || "cz"}.html`;
+  }
+
+  /**
+   * @returns {String}
+   * Returns policy content based on language
+   */
+  async getPolicyContentAsync() {
+    try {
+      const response = await fetch(this.policyUrl);
+      const pageName = this.options.site || window.location.host;
+      const pageLink = this.options.site || window.location.origin;
+      return await (
+        await response.text()
+      ).replace("${pageLink}", `<a href="${pageLink}">${pageName}</a>`);
+    } catch {
+      console.log(`Failed to fetch ${this.policyUrl}`);
+      return this.policyHtml;
+    }
+  }
+
+  /**
+   * @returns {Promise<String>}
+   */
+  getPolicyContent() {
+    return new Promise((resolve, reject) => {
+      fetch(this.policyUrl)
+        .then((response) => {
+          response
+            .text()
+            .then((value) => {
+              const pageName = this.options.site || window.location.host;
+              const pageLink = this.options.site || window.location.origin;
+              resolve(
+                value.replace(
+                  "${pageLink}",
+                  `<a href="${pageLink}">${pageName}</a>`
+                )
+              );
+            })
+            .catch((error) => reject(error));
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
+  /**
+   * @returns {String}
+   * Fallback in case fetch fails
    */
   get policyHtml() {
     return `<div class="cookiematic--drop cookiematic--drop-policy">
@@ -452,32 +516,61 @@ class CookieMatic {
    */
   create(container) {
     this.container = container;
-    this.container.innerHTML = `${this.html} ${this.policyHtml}`;
-    document.querySelector(`.cookiematic--accept-all`).onclick = () => {
-      this.savePreferences({ marketing: true, analytics: true });
-    };
-    document.querySelector(`.cookiematic--accept-none`).onclick = () => {
-      this.savePreferences({ marketing: false, analytics: false });
-    };
-    document.querySelector(`.cookiematic--accept-form`).onclick = () => {
-      this.savePreferencesForm();
-    };
-    document.querySelector(`.cookiematic--float`).onclick = () => {
-      this.showSettings();
-      return false;
-    };
-    const policyDrop = document.querySelector(".cookiematic--drop-policy");
-    policyDrop.onclick = (ev) => {
-      if (ev.target === policyDrop) this.hidePolicy();
-    };
-    document.querySelector(".cookiematic--close").onclick = () =>
-      this.hidePolicy();
-    const policyOpener = document.querySelector(".cookiematic--open-policy");
-    if (policyOpener)
-      policyOpener.onclick = () => {
-        this.showPolicy();
-        return false;
-      };
+    this.getPolicyContent()
+      .then((policyHtml) => {
+        this.container.innerHTML = `${this.html} <div class="cookiematic--drop cookiematic--drop-policy">
+        <button class="cookiematic--close" type="button">&times;</button><div class="cookiematic--policy">
+        <div class="cookiematic--container">${policyHtml}</div></div></div>`;
+        console.log("Creating CookieMatic elements");
+      })
+      .catch((reason) => {
+        console.log({ reason });
+        this.container.innerHTML = `${this.html} ${this.policyHtml}`;
+        console.log("Creating CookieMatic elements fallback");
+      })
+      .finally(() => {
+        console.log("Registering CookieMatic event handlers");
+        document.querySelector(`.cookiematic--accept-all`).onclick = () => {
+          document.getElementById(
+            "cookiematic--select-analytics"
+          ).checked = true;
+          document.getElementById(
+            "cookiematic--select-marketing"
+          ).checked = true;
+          this.savePreferences({ marketing: true, analytics: true });
+        };
+        document.querySelector(`.cookiematic--accept-none`).onclick = () => {
+          document.getElementById(
+            "cookiematic--select-analytics"
+          ).checked = false;
+          document.getElementById(
+            "cookiematic--select-marketing"
+          ).checked = false;
+          this.savePreferences({ marketing: false, analytics: false });
+        };
+        document.querySelector(`.cookiematic--accept-form`).onclick = () => {
+          this.savePreferencesForm();
+        };
+        document.querySelector(`.cookiematic--float`).onclick = () => {
+          this.showSettings();
+          return false;
+        };
+        const policyDrop = document.querySelector(".cookiematic--drop-policy");
+        policyDrop.onclick = (ev) => {
+          if (ev.target === policyDrop) this.hidePolicy();
+        };
+        document.querySelector(".cookiematic--close").onclick = () =>
+          this.hidePolicy();
+        const policyOpener = document.querySelector(
+          ".cookiematic--open-policy"
+        );
+        if (policyOpener)
+          policyOpener.onclick = () => {
+            this.showPolicy();
+            return false;
+          };
+        this.created = true;
+      });
   }
 
   show(suffix) {
@@ -493,7 +586,7 @@ class CookieMatic {
   }
 
   showSettings() {
-    if (this.container) this.create(this.container);
+    if (this.container && !this.created) this.create(this.container);
     this.show("settings");
   }
 

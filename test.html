@@ -119,9 +119,11 @@
       beatae, qui fugit rerum? Deleniti ab provident veritatis!
     </p>
     <div id="cookie-control"></div>
-
     <script>
-      const cookieMatic = new CookieMatic({ language: "sk" });
+      const cookieMatic = new CookieMatic({
+        language: "sk",
+        policyBaseUrl: "http://localhost:5501",
+      });
       cookieMatic.create(document.getElementById("cookie-control"));
     </script>
   </body>
