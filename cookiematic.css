@@ -129,6 +129,7 @@
   text-align: left;
   padding: 0.5em 2em;
   font-size: 16px;
+  list-style: initial;
 }
 
 .cookiematic--policy ol li,
@@ -140,6 +141,7 @@
 .cookiematic--policy p {
   text-align: left;
   font-family: sans-serif;
+  font-weight: 400;
 }
 
 .cookiematic--policy table td {
