@@ -1,6 +1,6 @@
 {
   "name": "@tomasvotava/cookiematic",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "CookieMatic is a simple class I created for my projects in order to create a reusable GDPR-compliant cookie settings modal.",
   "main": "cookiematic.js",
   "scripts": {

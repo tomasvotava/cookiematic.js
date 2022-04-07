@@ -602,3 +602,5 @@ class CookieMatic {
     this.hide("policy");
   }
 }
+
+exports.CookieMatic = CookieMatic;
